@@ -44,6 +44,16 @@ export default async function handler(req, res) {
       additionalComments
     } = req.body;
 
+    // Debug: log the received data
+    console.log('Received form data:', JSON.stringify(req.body, null, 2));
+    console.log('Ratings:', {
+      understanding: understandingRating,
+      speed: speedRating,
+      repetition: repetitionRating,
+      flexibility: flexibilityRating,
+      comfort: comfortRating
+    });
+
     // Insert the feedback into Supabase
     const { data, error } = await supabase
       .from('feedback_submissions')
@@ -52,11 +62,11 @@ export default async function handler(req, res) {
           student_name: studentName || 'Anonymous',
           subject: 'Physics',
           grade: '10',
-          understanding_rating: understandingRating,
-          speed_rating: speedRating,
-          repetition_rating: repetitionRating,
-          flexibility_rating: flexibilityRating,
-          comfort_rating: comfortRating,
+          understanding_rating: parseInt(understandingRating) || null,
+          speed_rating: parseInt(speedRating) || null,
+          repetition_rating: parseInt(repetitionRating) || null,
+          flexibility_rating: parseInt(flexibilityRating) || null,
+          comfort_rating: parseInt(comfortRating) || null,
           what_like: whatLike || '',
           what_helps: whatHelps || '',
           what_confuses: whatConfuses || '',
