@@ -1,8 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Get Supabase credentials from Vercel environment variables
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
+// Try different possible variable names that Vercel might use
+const supabaseUrl = process.env.SUPABASE_URL || 
+                   process.env.POSTGRES_URL_NON_POOLING || 
+                   process.env.POSTGRES_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY || 
+                   process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -11,9 +15,16 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Debug: log available environment variables (remove this after debugging)
+    console.log('Available env vars:', Object.keys(process.env).filter(key => 
+      key.includes('SUPABASE') || key.includes('POSTGRES') || key.includes('DATABASE')
+    ));
+    console.log('supabaseUrl:', supabaseUrl ? 'SET' : 'NOT SET');
+    console.log('supabaseKey:', supabaseKey ? 'SET' : 'NOT SET');
+
     // Check if Supabase is configured
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Supabase not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY environment variables.');
+      throw new Error(`Supabase not configured. Found URL: ${supabaseUrl ? 'YES' : 'NO'}, Key: ${supabaseKey ? 'YES' : 'NO'}. Available vars: ${Object.keys(process.env).filter(key => key.includes('SUPABASE') || key.includes('POSTGRES')).join(', ')}`);
     }
 
     // Initialize Supabase client
