@@ -81,7 +81,8 @@ export default async function handler(req, res) {
     console.error('Database error:', error);
     res.status(500).json({ 
       success: false, 
-      error: 'Failed to submit feedback' 
+      error: 'Failed to submit feedback',
+      details: error.message 
     });
   }
 }
