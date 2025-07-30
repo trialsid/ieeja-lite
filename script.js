@@ -38,15 +38,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Validate current step
     function validateCurrentStep() {
         const currentStepElement = document.querySelector(`[data-step="${currentStep}"]`);
-        const requiredInputs = currentStepElement.querySelectorAll('input[type="radio"]:required');
         
-        if (requiredInputs.length > 0) {
-            const radioName = requiredInputs[0].name;
-            const isChecked = currentStepElement.querySelector(`input[name="${radioName}"]:checked`);
-            return isChecked !== null;
+        // For rating questions (steps 2-6), check if a radio button is selected
+        if (currentStep >= 2 && currentStep <= 6) {
+            const radioInputs = currentStepElement.querySelectorAll('input[type="radio"]');
+            if (radioInputs.length > 0) {
+                const radioName = radioInputs[0].name;
+                const isChecked = currentStepElement.querySelector(`input[name="${radioName}"]:checked`);
+                return isChecked !== null;
+            }
         }
         
-        return true; // Text inputs and optional fields are always valid
+        return true; // Text inputs and step 1 (name) are always valid
     }
 
     // Next button click
@@ -57,7 +60,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 showStep(currentStep);
             }
         } else {
-            alert('Please select an option before continuing.');
+            // Show a more user-friendly message
+            const currentStepElement = document.querySelector(`[data-step="${currentStep}"]`);
+            const questionText = currentStepElement.querySelector('label').textContent;
+            alert(`Please answer the question: "${questionText}" before continuing.`);
         }
     });
 
@@ -73,13 +79,23 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        // Final validation before submission
+        const requiredRatings = ['understandingRating', 'speedRating', 'repetitionRating', 'flexibilityRating', 'comfortRating'];
+        const formData = new FormData(form);
+        
+        for (const rating of requiredRatings) {
+            if (!formData.get(rating)) {
+                alert(`Please complete all rating questions before submitting.`);
+                return;
+            }
+        }
+        
         // Disable submit button
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
 
         try {
             // Collect form data
-            const formData = new FormData(form);
             const feedbackData = {
                 studentName: formData.get('studentName') || 'Anonymous',
                 understandingRating: parseInt(formData.get('understandingRating')),
