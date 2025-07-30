@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teaching Feedback - ieeja.com</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Physics Class Feedback</h1>
+            <p>Grade 10 - Help me improve my Physics teaching! 🔬</p>
+        </header>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-text" id="progressText">Step 1 of 11</div>
+        </div>
+
+        <form id="feedbackForm" class="feedback-form">
+            <!-- Step 1: Name -->
+            <div class="step active" data-step="1">
+                <div class="form-group">
+                    <label for="studentName">Your Name (Optional - you can stay anonymous!)</label>
+                    <input type="text" id="studentName" name="studentName" placeholder="Enter your name or leave blank">
+                </div>
+            </div>
+
+            <!-- Step 2: Understanding -->
+            <div class="step" data-step="2">
+                <div class="form-group">
+                    <label>Do you understand when I explain things?</label>
+                    <div class="rating-group">
+                        <input type="radio" id="understanding5" name="understandingRating" value="5">
+                        <label for="understanding5">Always understand</label>
+                        
+                        <input type="radio" id="understanding4" name="understandingRating" value="4">
+                        <label for="understanding4">Usually understand</label>
+                        
+                        <input type="radio" id="understanding3" name="understandingRating" value="3">
+                        <label for="understanding3">Sometimes understand</label>
+                        
+                        <input type="radio" id="understanding2" name="understandingRating" value="2">
+                        <label for="understanding2">Rarely understand</label>
+                        
+                        <input type="radio" id="understanding1" name="understandingRating" value="1">
+                        <label for="understanding1">Hard to understand</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Speed -->
+            <div class="step" data-step="3">
+                <div class="form-group">
+                    <label>Is my teaching speed okay for you?</label>
+                    <div class="rating-group">
+                        <input type="radio" id="speed5" name="speedRating" value="5">
+                        <label for="speed5">Perfect speed</label>
+                        
+                        <input type="radio" id="speed4" name="speedRating" value="4">
+                        <label for="speed4">Good speed</label>
+                        
+                        <input type="radio" id="speed3" name="speedRating" value="3">
+                        <label for="speed3">A bit slow</label>
+                        
+                        <input type="radio" id="speed2" name="speedRating" value="2">
+                        <label for="speed2">Too slow</label>
+                        
+                        <input type="radio" id="speed1" name="speedRating" value="1">
+                        <label for="speed1">Way too slow</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Repetition -->
+            <div class="step" data-step="4">
+                <div class="form-group">
+                    <label>When I repeat things, does it help you or confuse you?</label>
+                    <div class="rating-group">
+                        <input type="radio" id="repetition5" name="repetitionRating" value="5">
+                        <label for="repetition5">Really helps me</label>
+                        
+                        <input type="radio" id="repetition4" name="repetitionRating" value="4">
+                        <label for="repetition4">Usually helps</label>
+                        
+                        <input type="radio" id="repetition3" name="repetitionRating" value="3">
+                        <label for="repetition3">Sometimes confusing</label>
+                        
+                        <input type="radio" id="repetition2" name="repetitionRating" value="2">
+                        <label for="repetition2">Often confusing</label>
+                        
+                        <input type="radio" id="repetition1" name="repetitionRating" value="1">
+                        <label for="repetition1">Makes me more confused</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Flexibility -->
+            <div class="step" data-step="5">
+                <div class="form-group">
+                    <label>Do you like how I teach without always following the textbook?</label>
+                    <div class="rating-group">
+                        <input type="radio" id="flexibility5" name="flexibilityRating" value="5">
+                        <label for="flexibility5">Love it!</label>
+                        
+                        <input type="radio" id="flexibility4" name="flexibilityRating" value="4">
+                        <label for="flexibility4">Like it</label>
+                        
+                        <input type="radio" id="flexibility3" name="flexibilityRating" value="3">
+                        <label for="flexibility3">It's okay</label>
+                        
+                        <input type="radio" id="flexibility2" name="flexibilityRating" value="2">
+                        <label for="flexibility2">Prefer textbook</label>
+                        
+                        <input type="radio" id="flexibility1" name="flexibilityRating" value="1">
+                        <label for="flexibility1">Confuses me</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6: Comfort -->
+            <div class="step" data-step="6">
+                <div class="form-group">
+                    <label>Do you feel comfortable asking questions in my class?</label>
+                    <div class="rating-group">
+                        <input type="radio" id="comfort5" name="comfortRating" value="5">
+                        <label for="comfort5">Very comfortable</label>
+                        
+                        <input type="radio" id="comfort4" name="comfortRating" value="4">
+                        <label for="comfort4">Comfortable</label>
+                        
+                        <input type="radio" id="comfort3" name="comfortRating" value="3">
+                        <label for="comfort3">Sometimes</label>
+                        
+                        <input type="radio" id="comfort2" name="comfortRating" value="2">
+                        <label for="comfort2">Not really</label>
+                        
+                        <input type="radio" id="comfort1" name="comfortRating" value="1">
+                        <label for="comfort1">Never comfortable</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7: What Like -->
+            <div class="step" data-step="7">
+                <div class="form-group">
+                    <label for="whatLike">What do you like about my teaching?</label>
+                    <textarea id="whatLike" name="whatLike" placeholder="Tell me what you enjoy or appreciate about how I teach Physics..." rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 8: What Helps -->
+            <div class="step" data-step="8">
+                <div class="form-group">
+                    <label for="whatHelps">What helps you learn best in my class?</label>
+                    <textarea id="whatHelps" name="whatHelps" placeholder="Tell me what makes learning easier for you..." rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 9: What Confuses -->
+            <div class="step" data-step="9">
+                <div class="form-group">
+                    <label for="whatConfuses">What confuses you most in my teaching?</label>
+                    <textarea id="whatConfuses" name="whatConfuses" placeholder="Help me understand what makes you confused..." rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 10: Improvements -->
+            <div class="step" data-step="10">
+                <div class="form-group">
+                    <label for="improvements">How can I teach better for you?</label>
+                    <textarea id="improvements" name="improvements" placeholder="Any suggestions to help me improve?" rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 11: Additional Comments -->
+            <div class="step" data-step="11">
+                <div class="form-group">
+                    <label for="additionalComments">Anything else you want to tell me?</label>
+                    <textarea id="additionalComments" name="additionalComments" placeholder="Any other thoughts, feelings, or suggestions..." rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button type="button" id="prevBtn" class="nav-btn prev-btn" style="display: none;">Previous</button>
+                <button type="button" id="nextBtn" class="nav-btn next-btn">Next</button>
+                <button type="submit" id="submitBtn" class="submit-btn" style="display: none;">Submit Feedback</button>
+            </div>
+        </form>
+
+        <div id="successMessage" class="success-message" style="display: none;">
+            <h3>Thank you for your feedback!</h3>
+            <p>Your response has been submitted successfully.</p>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
