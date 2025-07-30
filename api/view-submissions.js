@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { kv } from '@vercel/kv';
 
 export default async function handler(req, res) {
   // Only allow GET requests
@@ -7,67 +7,65 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Get all feedback submissions
-    const result = await sql`
-      SELECT 
-        id,
-        student_name,
-        subject,
-        grade,
-        understanding_rating,
-        speed_rating,
-        repetition_rating,
-        flexibility_rating,
-        comfort_rating,
-        what_like,
-        what_helps,
-        what_confuses,
-        improvements,
-        additional_comments,
-        submitted_at
-      FROM feedback_submissions 
-      ORDER BY submitted_at DESC
-    `;
+    // Get all submission IDs
+    const submissionIds = await kv.lrange('all_submissions', 0, -1);
+    
+    // Get all submission data
+    const submissions = [];
+    for (const id of submissionIds) {
+      const submission = await kv.get(id);
+      if (submission) {
+        // Format for easy viewing
+        const formattedSubmission = {
+          id: submission.id,
+          studentName: submission.studentName,
+          subject: submission.subject,
+          grade: submission.grade,
+          ratings: {
+            understanding: submission.understandingRating,
+            speed: submission.speedRating,
+            repetition: submission.repetitionRating,
+            flexibility: submission.flexibilityRating,
+            comfort: submission.comfortRating
+          },
+          feedback: {
+            whatLike: submission.whatLike,
+            whatHelps: submission.whatHelps,
+            whatConfuses: submission.whatConfuses,
+            improvements: submission.improvements,
+            additionalComments: submission.additionalComments
+          },
+          submittedAt: submission.submittedAt
+        };
+        submissions.push(formattedSubmission);
+      }
+    }
 
-    // Format for easy viewing
-    const submissions = result.rows.map(row => ({
-      id: row.id,
-      studentName: row.student_name,
-      subject: row.subject,
-      grade: row.grade,
-      ratings: {
-        understanding: row.understanding_rating,
-        speed: row.speed_rating,
-        repetition: row.repetition_rating,
-        flexibility: row.flexibility_rating,
-        comfort: row.comfort_rating
-      },
-      feedback: {
-        whatLike: row.what_like,
-        whatHelps: row.what_helps,
-        whatConfuses: row.what_confuses,
-        improvements: row.improvements,
-        additionalComments: row.additional_comments
-      },
-      submittedAt: row.submitted_at
-    }));
+    // Sort by submission date (newest first)
+    submissions.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
 
-    // Get summary statistics
-    const stats = await sql`
-      SELECT 
-        COUNT(*) as total_submissions,
-        AVG(understanding_rating) as avg_understanding,
-        AVG(speed_rating) as avg_speed,
-        AVG(repetition_rating) as avg_repetition,
-        AVG(flexibility_rating) as avg_flexibility,
-        AVG(comfort_rating) as avg_comfort
-      FROM feedback_submissions
-    `;
+    // Calculate summary statistics
+    const stats = {
+      total_submissions: submissions.length,
+      avg_understanding: 0,
+      avg_speed: 0,
+      avg_repetition: 0,
+      avg_flexibility: 0,
+      avg_comfort: 0
+    };
+
+    if (submissions.length > 0) {
+      stats.avg_understanding = (submissions.reduce((sum, s) => sum + s.ratings.understanding, 0) / submissions.length).toFixed(1);
+      stats.avg_speed = (submissions.reduce((sum, s) => sum + s.ratings.speed, 0) / submissions.length).toFixed(1);
+      stats.avg_repetition = (submissions.reduce((sum, s) => sum + s.ratings.repetition, 0) / submissions.length).toFixed(1);
+      stats.avg_flexibility = (submissions.reduce((sum, s) => sum + s.ratings.flexibility, 0) / submissions.length).toFixed(1);
+      stats.avg_comfort = (submissions.reduce((sum, s) => sum + s.ratings.comfort, 0) / submissions.length).toFixed(1);
+    }
 
     res.status(200).json({ 
       success: true,
       submissions,
-      stats: stats.rows[0],
+      stats,
       total: submissions.length
     });
 
@@ -75,7 +73,8 @@ export default async function handler(req, res) {
     console.error('Database error:', error);
     res.status(500).json({ 
       success: false, 
-      error: 'Failed to retrieve submissions' 
+      error: 'Failed to retrieve submissions',
+      details: error.message 
     });
   }
 }

@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { kv } from '@vercel/kv';
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -21,60 +21,38 @@ export default async function handler(req, res) {
       additionalComments
     } = req.body;
 
-    // Create table if it doesn't exist
-    await sql`
-      CREATE TABLE IF NOT EXISTS feedback_submissions (
-        id SERIAL PRIMARY KEY,
-        student_name VARCHAR(255),
-        subject VARCHAR(50) DEFAULT 'Physics',
-        grade VARCHAR(10) DEFAULT '10',
-        understanding_rating INTEGER NOT NULL,
-        speed_rating INTEGER NOT NULL,
-        repetition_rating INTEGER NOT NULL,
-        flexibility_rating INTEGER NOT NULL,
-        comfort_rating INTEGER NOT NULL,
-        what_like TEXT,
-        what_helps TEXT,
-        what_confuses TEXT,
-        improvements TEXT,
-        additional_comments TEXT,
-        submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `;
+    // Generate unique ID for this submission
+    const submissionId = `feedback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Create feedback data object
+    const feedbackData = {
+      id: submissionId,
+      studentName: studentName || 'Anonymous',
+      subject: 'Physics',
+      grade: '10',
+      understandingRating,
+      speedRating,
+      repetitionRating,
+      flexibilityRating,
+      comfortRating,
+      whatLike: whatLike || '',
+      whatHelps: whatHelps || '',
+      whatConfuses: whatConfuses || '',
+      improvements: improvements || '',
+      additionalComments: additionalComments || '',
+      submittedAt: new Date().toISOString()
+    };
 
-    // Insert the feedback
-    const result = await sql`
-      INSERT INTO feedback_submissions (
-        student_name,
-        understanding_rating,
-        speed_rating,
-        repetition_rating,
-        flexibility_rating,
-        comfort_rating,
-        what_like,
-        what_helps,
-        what_confuses,
-        improvements,
-        additional_comments
-      ) VALUES (
-        ${studentName || 'Anonymous'},
-        ${understandingRating},
-        ${speedRating},
-        ${repetitionRating},
-        ${flexibilityRating},
-        ${comfortRating},
-        ${whatLike || ''},
-        ${whatHelps || ''},
-        ${whatConfuses || ''},
-        ${improvements || ''},
-        ${additionalComments || ''}
-      ) RETURNING id
-    `;
+    // Store the feedback
+    await kv.set(submissionId, feedbackData);
+    
+    // Add to list of all submissions
+    await kv.lpush('all_submissions', submissionId);
 
     res.status(200).json({ 
       success: true, 
       message: 'Feedback submitted successfully',
-      id: result.rows[0].id 
+      id: submissionId
     });
 
   } catch (error) {
