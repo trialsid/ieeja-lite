@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/submit-feedback.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/view-submissions.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
