@@ -1,0 +1,17 @@
+{
+  "name": "physics-feedback-form",
+  "version": "1.0.0",
+  "description": "Step-by-step feedback form for Grade 10 Physics teaching",
+  "main": "index.html",
+  "dependencies": {
+    "@vercel/postgres": "^0.5.1"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required for static site'",
+    "start": "vercel dev"
+  },
+  "keywords": ["feedback", "teaching", "physics", "education", "vercel"],
+  "author": "Surya",
+  "license": "MIT"
+}

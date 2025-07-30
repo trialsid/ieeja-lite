@@ -1,6 +1,3 @@
-import { db } from './firebase-config.js';
-import { collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('feedbackForm');
     const successMessage = document.getElementById('successMessage');
@@ -85,8 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(form);
             const feedbackData = {
                 studentName: formData.get('studentName') || 'Anonymous',
-                subject: 'Physics',
-                grade: '10',
                 understandingRating: parseInt(formData.get('understandingRating')),
                 speedRating: parseInt(formData.get('speedRating')),
                 repetitionRating: parseInt(formData.get('repetitionRating')),
@@ -96,14 +91,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 whatHelps: formData.get('whatHelps') || '',
                 whatConfuses: formData.get('whatConfuses') || '',
                 improvements: formData.get('improvements') || '',
-                additionalComments: formData.get('additionalComments') || '',
-                timestamp: serverTimestamp(),
-                submittedAt: new Date().toISOString()
+                additionalComments: formData.get('additionalComments') || ''
             };
 
-            // Add document to Firestore
-            const docRef = await addDoc(collection(db, 'teachingFeedback'), feedbackData);
-            console.log('Document written with ID: ', docRef.id);
+            // Submit to Vercel API
+            const response = await fetch('/api/submit-feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(feedbackData)
+            });
+
+            const result = await response.json();
+            
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to submit feedback');
+            }
+
+            console.log('Feedback submitted with ID:', result.id);
 
             // Show success message
             form.style.display = 'none';

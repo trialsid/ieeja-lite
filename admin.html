@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - View Feedback Submissions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a202c;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stats {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 15px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #4a5568;
+            margin-top: 5px;
+        }
+        
+        .submissions {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .submission-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .submission-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .student-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .timestamp {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        .ratings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .rating-item {
+            text-align: center;
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+        
+        .rating-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .rating-label {
+            font-size: 0.8rem;
+            color: #4a5568;
+            margin-top: 5px;
+        }
+        
+        .feedback-section {
+            margin-top: 20px;
+        }
+        
+        .feedback-item {
+            margin-bottom: 15px;
+        }
+        
+        .feedback-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        
+        .feedback-text {
+            color: #4a5568;
+            background: rgba(247, 250, 252, 0.8);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #4a5568;
+        }
+        
+        .error {
+            background: rgba(254, 226, 226, 0.9);
+            color: #c53030;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Physics Feedback Admin</h1>
+            <p>View and analyze student feedback submissions</p>
+        </div>
+        
+        <div id="stats" class="stats" style="display: none;">
+            <h2 style="margin-bottom: 20px; color: #2d3748;">Summary Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalSubmissions">-</div>
+                    <div class="stat-label">Total Submissions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgUnderstanding">-</div>
+                    <div class="stat-label">Avg Understanding</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgSpeed">-</div>
+                    <div class="stat-label">Avg Speed Rating</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgRepetition">-</div>
+                    <div class="stat-label">Avg Repetition</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgFlexibility">-</div>
+                    <div class="stat-label">Avg Flexibility</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgComfort">-</div>
+                    <div class="stat-label">Avg Comfort</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="submissions">
+            <h2 style="margin-bottom: 20px; color: #2d3748;">All Submissions</h2>
+            <div id="submissionsContainer">
+                <div class="loading">Loading submissions...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadSubmissions() {
+            try {
+                const response = await fetch('/api/view-submissions');
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error);
+                }
+                
+                displayStats(data.stats);
+                displaySubmissions(data.submissions);
+                
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+                document.getElementById('submissionsContainer').innerHTML = 
+                    `<div class="error">Error loading submissions: ${error.message}</div>`;
+            }
+        }
+        
+        function displayStats(stats) {
+            document.getElementById('totalSubmissions').textContent = stats.total_submissions || 0;
+            document.getElementById('avgUnderstanding').textContent = 
+                stats.avg_understanding ? parseFloat(stats.avg_understanding).toFixed(1) : '-';
+            document.getElementById('avgSpeed').textContent = 
+                stats.avg_speed ? parseFloat(stats.avg_speed).toFixed(1) : '-';
+            document.getElementById('avgRepetition').textContent = 
+                stats.avg_repetition ? parseFloat(stats.avg_repetition).toFixed(1) : '-';
+            document.getElementById('avgFlexibility').textContent = 
+                stats.avg_flexibility ? parseFloat(stats.avg_flexibility).toFixed(1) : '-';
+            document.getElementById('avgComfort').textContent = 
+                stats.avg_comfort ? parseFloat(stats.avg_comfort).toFixed(1) : '-';
+            
+            document.getElementById('stats').style.display = 'block';
+        }
+        
+        function displaySubmissions(submissions) {
+            const container = document.getElementById('submissionsContainer');
+            
+            if (submissions.length === 0) {
+                container.innerHTML = '<div class="loading">No submissions yet.</div>';
+                return;
+            }
+            
+            container.innerHTML = submissions.map(submission => `
+                <div class="submission-card">
+                    <div class="submission-header">
+                        <div class="student-name">${submission.studentName}</div>
+                        <div class="timestamp">${new Date(submission.submittedAt).toLocaleString()}</div>
+                    </div>
+                    
+                    <div class="ratings">
+                        <div class="rating-item">
+                            <div class="rating-value">${submission.ratings.understanding}/5</div>
+                            <div class="rating-label">Understanding</div>
+                        </div>
+                        <div class="rating-item">
+                            <div class="rating-value">${submission.ratings.speed}/5</div>
+                            <div class="rating-label">Speed</div>
+                        </div>
+                        <div class="rating-item">
+                            <div class="rating-value">${submission.ratings.repetition}/5</div>
+                            <div class="rating-label">Repetition</div>
+                        </div>
+                        <div class="rating-item">
+                            <div class="rating-value">${submission.ratings.flexibility}/5</div>
+                            <div class="rating-label">Flexibility</div>
+                        </div>
+                        <div class="rating-item">
+                            <div class="rating-value">${submission.ratings.comfort}/5</div>
+                            <div class="rating-label">Comfort</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feedback-section">
+                        ${submission.feedback.whatLike ? `
+                            <div class="feedback-item">
+                                <div class="feedback-label">What they like:</div>
+                                <div class="feedback-text">${submission.feedback.whatLike}</div>
+                            </div>
+                        ` : ''}
+                        
+                        ${submission.feedback.whatHelps ? `
+                            <div class="feedback-item">
+                                <div class="feedback-label">What helps them learn:</div>
+                                <div class="feedback-text">${submission.feedback.whatHelps}</div>
+                            </div>
+                        ` : ''}
+                        
+                        ${submission.feedback.whatConfuses ? `
+                            <div class="feedback-item">
+                                <div class="feedback-label">What confuses them:</div>
+                                <div class="feedback-text">${submission.feedback.whatConfuses}</div>
+                            </div>
+                        ` : ''}
+                        
+                        ${submission.feedback.improvements ? `
+                            <div class="feedback-item">
+                                <div class="feedback-label">Suggested improvements:</div>
+                                <div class="feedback-text">${submission.feedback.improvements}</div>
+                            </div>
+                        ` : ''}
+                        
+                        ${submission.feedback.additionalComments ? `
+                            <div class="feedback-item">
+                                <div class="feedback-label">Additional comments:</div>
+                                <div class="feedback-text">${submission.feedback.additionalComments}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Load submissions when page loads
+        document.addEventListener('DOMContentLoaded', loadSubmissions);
+    </script>
+</body>
+</html>
