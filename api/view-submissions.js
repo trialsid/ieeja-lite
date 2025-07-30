@@ -1,4 +1,8 @@
-import { kv } from '@vercel/kv';
+import { createClient } from '@supabase/supabase-js';
+
+// Get Supabase credentials from Vercel environment variables
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
 export default async function handler(req, res) {
   // Only allow GET requests
@@ -7,46 +11,50 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Get all submission IDs
-    const submissionIds = await kv.lrange('all_submissions', 0, -1);
-    
-    // Get all submission data
-    const submissions = [];
-    for (const id of submissionIds) {
-      const submission = await kv.get(id);
-      if (submission) {
-        // Format for easy viewing
-        const formattedSubmission = {
-          id: submission.id,
-          studentName: submission.studentName,
-          subject: submission.subject,
-          grade: submission.grade,
-          ratings: {
-            understanding: submission.understandingRating,
-            speed: submission.speedRating,
-            repetition: submission.repetitionRating,
-            flexibility: submission.flexibilityRating,
-            comfort: submission.comfortRating
-          },
-          feedback: {
-            whatLike: submission.whatLike,
-            whatHelps: submission.whatHelps,
-            whatConfuses: submission.whatConfuses,
-            improvements: submission.improvements,
-            additionalComments: submission.additionalComments
-          },
-          submittedAt: submission.submittedAt
-        };
-        submissions.push(formattedSubmission);
-      }
+    // Check if Supabase is configured
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Supabase not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY environment variables.');
     }
 
-    // Sort by submission date (newest first)
-    submissions.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+    // Initialize Supabase client
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Get all feedback submissions
+    const { data: submissions, error } = await supabase
+      .from('feedback_submissions')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    // Format for easy viewing
+    const formattedSubmissions = submissions.map(row => ({
+      id: row.id,
+      studentName: row.student_name,
+      subject: row.subject,
+      grade: row.grade,
+      ratings: {
+        understanding: row.understanding_rating,
+        speed: row.speed_rating,
+        repetition: row.repetition_rating,
+        flexibility: row.flexibility_rating,
+        comfort: row.comfort_rating
+      },
+      feedback: {
+        whatLike: row.what_like,
+        whatHelps: row.what_helps,
+        whatConfuses: row.what_confuses,
+        improvements: row.improvements,
+        additionalComments: row.additional_comments
+      },
+      submittedAt: row.created_at
+    }));
 
     // Calculate summary statistics
     const stats = {
-      total_submissions: submissions.length,
+      total_submissions: formattedSubmissions.length,
       avg_understanding: 0,
       avg_speed: 0,
       avg_repetition: 0,
@@ -54,19 +62,19 @@ export default async function handler(req, res) {
       avg_comfort: 0
     };
 
-    if (submissions.length > 0) {
-      stats.avg_understanding = (submissions.reduce((sum, s) => sum + s.ratings.understanding, 0) / submissions.length).toFixed(1);
-      stats.avg_speed = (submissions.reduce((sum, s) => sum + s.ratings.speed, 0) / submissions.length).toFixed(1);
-      stats.avg_repetition = (submissions.reduce((sum, s) => sum + s.ratings.repetition, 0) / submissions.length).toFixed(1);
-      stats.avg_flexibility = (submissions.reduce((sum, s) => sum + s.ratings.flexibility, 0) / submissions.length).toFixed(1);
-      stats.avg_comfort = (submissions.reduce((sum, s) => sum + s.ratings.comfort, 0) / submissions.length).toFixed(1);
+    if (formattedSubmissions.length > 0) {
+      stats.avg_understanding = (formattedSubmissions.reduce((sum, s) => sum + s.ratings.understanding, 0) / formattedSubmissions.length).toFixed(1);
+      stats.avg_speed = (formattedSubmissions.reduce((sum, s) => sum + s.ratings.speed, 0) / formattedSubmissions.length).toFixed(1);
+      stats.avg_repetition = (formattedSubmissions.reduce((sum, s) => sum + s.ratings.repetition, 0) / formattedSubmissions.length).toFixed(1);
+      stats.avg_flexibility = (formattedSubmissions.reduce((sum, s) => sum + s.ratings.flexibility, 0) / formattedSubmissions.length).toFixed(1);
+      stats.avg_comfort = (formattedSubmissions.reduce((sum, s) => sum + s.ratings.comfort, 0) / formattedSubmissions.length).toFixed(1);
     }
 
     res.status(200).json({ 
       success: true,
-      submissions,
+      submissions: formattedSubmissions,
       stats,
-      total: submissions.length
+      total: formattedSubmissions.length
     });
 
   } catch (error) {

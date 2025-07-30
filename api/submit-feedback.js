@@ -1,4 +1,8 @@
-import { kv } from '@vercel/kv';
+import { createClient } from '@supabase/supabase-js';
+
+// Get Supabase credentials from Vercel environment variables
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -7,6 +11,14 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Check if Supabase is configured
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Supabase not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY environment variables.');
+    }
+
+    // Initialize Supabase client
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
     const {
       studentName,
       understandingRating,
@@ -21,38 +33,37 @@ export default async function handler(req, res) {
       additionalComments
     } = req.body;
 
-    // Generate unique ID for this submission
-    const submissionId = `feedback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
-    // Create feedback data object
-    const feedbackData = {
-      id: submissionId,
-      studentName: studentName || 'Anonymous',
-      subject: 'Physics',
-      grade: '10',
-      understandingRating,
-      speedRating,
-      repetitionRating,
-      flexibilityRating,
-      comfortRating,
-      whatLike: whatLike || '',
-      whatHelps: whatHelps || '',
-      whatConfuses: whatConfuses || '',
-      improvements: improvements || '',
-      additionalComments: additionalComments || '',
-      submittedAt: new Date().toISOString()
-    };
+    // Insert the feedback into Supabase
+    const { data, error } = await supabase
+      .from('feedback_submissions')
+      .insert([
+        {
+          student_name: studentName || 'Anonymous',
+          subject: 'Physics',
+          grade: '10',
+          understanding_rating: understandingRating,
+          speed_rating: speedRating,
+          repetition_rating: repetitionRating,
+          flexibility_rating: flexibilityRating,
+          comfort_rating: comfortRating,
+          what_like: whatLike || '',
+          what_helps: whatHelps || '',
+          what_confuses: whatConfuses || '',
+          improvements: improvements || '',
+          additional_comments: additionalComments || ''
+        }
+      ])
+      .select()
+      .single();
 
-    // Store the feedback
-    await kv.set(submissionId, feedbackData);
-    
-    // Add to list of all submissions
-    await kv.lpush('all_submissions', submissionId);
+    if (error) {
+      throw error;
+    }
 
     res.status(200).json({ 
       success: true, 
       message: 'Feedback submitted successfully',
-      id: submissionId
+      id: data.id
     });
 
   } catch (error) {

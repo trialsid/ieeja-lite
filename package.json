@@ -4,7 +4,7 @@
   "description": "Step-by-step feedback form for Grade 10 Physics teaching",
   "main": "index.html",
   "dependencies": {
-    "@vercel/kv": "^1.0.1"
+    "@supabase/supabase-js": "^2.39.0"
   },
   "scripts": {
     "dev": "vercel dev",
