@@ -94,8 +94,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 additionalComments: formData.get('additionalComments') || ''
             };
 
-            // Submit to Vercel API
-            const response = await fetch('/api/submit-feedback', {
+            // Submit to Vercel API (using simple version for now)
+            const response = await fetch('/api/submit-feedback-simple', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
