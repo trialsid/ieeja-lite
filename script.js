@@ -205,6 +205,14 @@ document.addEventListener('DOMContentLoaded', function() {
         nextBtn.style.display = step === totalSteps ? 'none' : 'inline-block';
         submitBtn.style.display = step === totalSteps ? 'inline-block' : 'none';
         
+        // Toggle header compact mode
+        const header = document.querySelector('header');
+        if (step > 1) {
+            header.classList.add('compact');
+        } else {
+            header.classList.remove('compact');
+        }
+        
         updateProgress();
     }
 

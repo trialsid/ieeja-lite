@@ -28,6 +28,12 @@ header {
     padding: 48px 32px;
     border: 1px solid #d2d2d7;
     position: relative;
+    transition: all 0.3s ease;
+}
+
+header.compact {
+    padding: 24px 32px;
+    margin-bottom: 20px;
 }
 
 .language-selector {
@@ -66,12 +72,23 @@ header h1 {
     font-size: 2.25rem;
     font-weight: 600;
     letter-spacing: -0.02em;
+    transition: all 0.3s ease;
+}
+
+header.compact h1 {
+    font-size: 1.75rem;
+    margin-bottom: 8px;
 }
 
 header p {
     color: #86868b;
     font-size: 1rem;
     font-weight: 400;
+    transition: all 0.3s ease;
+}
+
+header.compact p {
+    font-size: 0.875rem;
 }
 
 .feedback-form {
