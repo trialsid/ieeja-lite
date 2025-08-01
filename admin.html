@@ -15,12 +15,14 @@
         }
         
         body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: #1a202c;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+            line-height: 1.5;
+            color: #1d1d1f;
+            background: #f5f5f7;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         .container {
@@ -29,160 +31,153 @@
         }
         
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 30px;
+            background: #ffffff;
+            padding: 32px;
+            margin-bottom: 24px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid #d2d2d7;
         }
         
         .header h1 {
-            color: #2d3748;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #1d1d1f;
+            font-size: 2.25rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
         }
         
         .stats {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: #ffffff;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #d2d2d7;
         }
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2px;
         }
         
         .stat-item {
             text-align: center;
             padding: 20px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 15px;
+            background: #f5f5f7;
+            border: 1px solid #d2d2d7;
         }
         
         .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #667eea;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #007aff;
         }
         
         .stat-label {
-            color: #4a5568;
-            margin-top: 5px;
+            color: #86868b;
+            margin-top: 4px;
+            font-size: 0.875rem;
         }
         
         .submissions {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: #ffffff;
+            padding: 24px;
+            border: 1px solid #d2d2d7;
         }
         
         .submission-card {
-            background: rgba(255, 255, 255, 0.8);
-            border: 2px solid #e2e8f0;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+            background: #ffffff;
+            border: 1px solid #d2d2d7;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: border-color 0.15s ease;
         }
         
         .submission-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+            border-color: #86868b;
         }
         
         .submission-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #d2d2d7;
         }
         
         .student-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #2d3748;
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #1d1d1f;
         }
         
         .timestamp {
-            color: #718096;
-            font-size: 0.9rem;
+            color: #86868b;
+            font-size: 0.875rem;
         }
         
         .ratings {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 2px;
+            margin-bottom: 16px;
         }
         
         .rating-item {
             text-align: center;
-            padding: 10px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 10px;
+            padding: 12px 8px;
+            background: #f5f5f7;
+            border: 1px solid #d2d2d7;
         }
         
         .rating-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #667eea;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #007aff;
         }
         
         .rating-label {
-            font-size: 0.8rem;
-            color: #4a5568;
-            margin-top: 5px;
+            font-size: 0.75rem;
+            color: #86868b;
+            margin-top: 4px;
         }
         
         .feedback-section {
-            margin-top: 20px;
+            margin-top: 16px;
         }
         
         .feedback-item {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .feedback-label {
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 5px;
+            font-weight: 500;
+            color: #1d1d1f;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
         }
         
         .feedback-text {
-            color: #4a5568;
-            background: rgba(247, 250, 252, 0.8);
-            padding: 10px 15px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            color: #1d1d1f;
+            background: #f5f5f7;
+            padding: 12px 16px;
+            border: 1px solid #d2d2d7;
+            border-left: 3px solid #007aff;
         }
         
         .loading {
             text-align: center;
-            padding: 50px;
-            color: #4a5568;
+            padding: 40px;
+            color: #86868b;
         }
         
         .error {
-            background: rgba(254, 226, 226, 0.9);
-            color: #c53030;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
+            background: #ffebee;
+            color: #d32f2f;
+            padding: 16px 20px;
+            margin: 16px 0;
             text-align: center;
+            border: 1px solid #ffcdd2;
         }
     </style>
 </head>
@@ -194,7 +189,7 @@
         </div>
         
         <div id="stats" class="stats" style="display: none;">
-            <h2 style="margin-bottom: 20px; color: #2d3748;">Summary Statistics</h2>
+            <h2 style="margin-bottom: 16px; color: #1d1d1f; font-weight: 600; font-size: 1.5rem;">Summary Statistics</h2>
             <div class="stats-grid">
                 <div class="stat-item">
                     <div class="stat-value" id="totalSubmissions">-</div>
@@ -224,7 +219,7 @@
         </div>
         
         <div class="submissions">
-            <h2 style="margin-bottom: 20px; color: #2d3748;">All Submissions</h2>
+            <h2 style="margin-bottom: 16px; color: #1d1d1f; font-weight: 600; font-size: 1.5rem;">All Submissions</h2>
             <div id="submissionsContainer">
                 <div class="loading">Loading submissions...</div>
             </div>
